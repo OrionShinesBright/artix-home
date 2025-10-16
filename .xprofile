@@ -1,0 +1,12 @@
+#!/bin/bash
+
+/usr/bin/pipewire &
+/usr/bin/pipewire-pulse &
+/usr/bin/wireplumber &
+
+udiskie &>	 /dev/null &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &> /dev/null &
+
+amixer set Master mute
+amixer set Master 0%
+pactl set-source-mute @DEFAULT_SOURCE@ true
