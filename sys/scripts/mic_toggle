@@ -1,0 +1,5 @@
+#!/bin/sh
+
+pactl set-source-mute @DEFAULT_SOURCE@ toggle
+notify-send "Mic Toggled!"
+kill -39 "$STATUSBAR"

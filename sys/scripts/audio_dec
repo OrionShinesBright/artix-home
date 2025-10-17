@@ -1,0 +1,5 @@
+#!/bin/sh
+
+amixer set Master 5%-
+notify-send "Audio -5%"
+kill -38 $STATUSBAR

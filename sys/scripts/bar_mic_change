@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo -e "$(amixer | grep '\[' | grep 'Front Left: Capture' | sed -E 's/.*\[([0-9]+%)\] \[([a-z]+)\].*/mic: \2/')"

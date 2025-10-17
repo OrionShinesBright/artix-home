@@ -1,0 +1,16 @@
+#!/bin/bash
+
+bat_stored=$(cat /sys/class/power_supply/BAT0/capacity)
+bat_state=$(cat /sys/class/power_supply/BAT0/status)
+printf "${bat_stored}%% "
+if [ "$bat_state" == 'Discharging' ]; then
+	if [ "$bat_stored" -lt 10 ]; then
+		notify-send -u critical -t 5000 -c battery -i battery -a battery "CRITICAL: Battery below 10%"
+	elif [ "$bat_stored" -lt 20 ]; then
+		notify-send -u critical -c battery -i battery -a battery -t 4000 "WARNING: Battery below 20%"
+	elif [ "$bat_stored" -lt 30 ]; then
+		notify-send -u normal -c battery -i battery -a battery -t 3000 "Battery below 30%"
+	elif [ "$bat_stored" -lt 40 ]; then
+		notify-send -u low -c battery -i battery -a battery -t 2000 "Battery is now below 40%"
+	fi
+fi

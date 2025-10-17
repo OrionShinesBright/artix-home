@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo -e "$(amixer | grep '\[' | grep 'Front Left: Playback' | sed -E 's/.*\[([0-9]+%)\] \[([a-z]+)\].*/audio: \1 \2/')"

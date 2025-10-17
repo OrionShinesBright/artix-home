@@ -1,0 +1,100 @@
+#!/bin/bash
+
+(source /home/orion/.zshrc)
+
+choice=$(dialog --menu "What, if I may ask, do you desire?" 0 0 0 \
+	"1" "[BROWSE]	a Subject" \
+	"2" "[ OPEN ]	a File in its Default Application" \
+	"3" "[GIT -S]	Status of a Subject and cd into it" \
+	"4" "[ TREE ]	of a Subject and cd into it too" \
+	"5" "[ FIND ]	file location and copy to clipboard" \
+	"6" "[ EXIT ]" \
+	3>&1 1>&2 2>&3)
+
+fzf_normal_nowalk() {
+	fzf --algo=v2 --no-sort \
+		--style=full --color=dark,gutter:black:dim \
+		--layout=reverse --margin=5 --no-scrollbar \
+		--list-border=none --input-border=none --preview-border=line \
+		--prompt="$1" --ghost="$2" \
+		--no-sort
+}
+
+fzf_preview_nowalk() {
+	fzf --algo=v2 --no-sort \
+		--style=full --color=dark,gutter:black:dim \
+		--layout=reverse --margin=5 --no-scrollbar \
+		--list-border=none --input-border=none --preview-border=line \
+		--prompt="$1" --ghost="$2" \
+		--no-sort \
+		--preview="$3"
+}
+
+fzf_normal() {
+	fzf --algo=v2 --no-sort \
+		--style=full --color=dark,gutter:black:dim \
+		--layout=reverse --margin=5 --no-scrollbar \
+		--list-border=none --input-border=none --preview-border=line \
+		--prompt="$1" --ghost="$2" \
+		--no-sort \
+		--walker-root="$3" --walker="$4"
+}
+
+fzf_preview() {
+	fzf --algo=v2 --no-sort \
+		--style=full --color=dark,gutter:black:dim \
+		--layout=reverse --margin=5 --no-scrollbar \
+		--list-border=none --input-border=none --preview-border=line \
+		--prompt="$1" --ghost="$2" \
+		--no-sort \
+		--walker-root="$3" --walker="$4" \
+		--preview="$5"
+}
+
+browse() {
+	yazi "$STUDYDIR/$(ls "$STUDYDIR" | fzf_preview_nowalk "Choose Subject > " "so many.. whyyy" "ls -lA --color --classify -1 $STUDYDIR/{}")"
+}
+
+opening() {
+	file="$(fzf_preview "Choose File > " "[b|a|l|q|n]" "$STUDYDIR" "file" "bat -f {}")"
+	[ "$(basename "$file")" == "exe" ] && clear && echo "Could not open binary file" && exit 2
+	extension="$(echo "$file" | sed 's/.*\.//')"
+	case "$extension" in
+	pdf) zathura "$file" ;;
+	lnk) firefox "$(cat "$file")" ;;
+	com) clear && echo "Could not open dos binary" && exit 3 ;;
+	txt) "$EDITOR" "$file" ;;
+	md) "$EDITOR" "$file" ;;
+	cpp) "$EDITOR" "$file" ;;
+	xml) "$EDITOR" "$file" ;;
+	lst) "$EDITOR" "$file" ;;
+	asm) "$EDITOR" "$file" ;;
+	esac
+}
+
+gitStats() {
+	file="$(ls "$STUDYDIR" | fzf_preview_nowalk "Choose Subject > " "what do you get from this?" "ls -lA --color --classify -1 $STUDYDIR/{}")"
+	cd "$STUDYDIR/$file"
+	clear
+	git status
+}
+
+treeing() {
+	cd "$STUDYDIR/$(ls "$STUDYDIR" | fzf_preview_nowalk "Choose Subject > " "Snails are modern day leviathans" "ls -lA --color --classify -1 $STUDYDIR/{}")" || exit 5
+	tree -C | less -R
+}
+
+finder() {
+	fzf_preview "Choose file > " "things are weird.." "$STUDYDIR" "file" "bat -f {}" | xclip -selection clipboard
+}
+
+case $choice in
+1) browse ;;
+2) opening ;;
+3) gitStats && read ;;
+4) treeing ;;
+5) finder ;;
+6) clear && exit 0 ;;
+esac
+
+std_

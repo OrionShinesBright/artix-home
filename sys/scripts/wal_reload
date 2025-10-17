@@ -1,0 +1,17 @@
+#!/bin/bash
+
+waldir="/home/orion/.cache/wal"
+dwmdir="/home/orion/repos/cloned/mybuilds/suckless.dwm/"
+dmenudir="/home/orion/repos/cloned/untinkered/suckless.dmenu"
+
+cp "$waldir"/colors-wal-dwm.h "$dwmdir"
+sync
+sed -i 's/\ const//' 	"$dwmdir"/colors-wal-dwm.h
+sed -i 's/urg/status/g' "$dwmdir"/colors-wal-dwm.h
+sed -i 's/Urg/Status/'	"$dwmdir"/colors-wal-dwm.h
+cd "$dwmdir" && make clean install && cd || exit 1
+
+cp "$waldir"/colors-wal-dmenu.h "$dmenudir"
+
+[ -z "$(pidof dwm)" ] || kill -1 "$(pidof dwm)"
+[ -z "$(pidof dwm)" ] || notify-send -a PYWALL "Wallpaper and colorscheme reloaded"

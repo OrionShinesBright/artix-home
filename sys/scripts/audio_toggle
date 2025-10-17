@@ -1,0 +1,5 @@
+#!/bin/sh
+
+amixer set Master toggle
+notify-send "Audio mute toggled"
+kill -38 "$STATUSBAR"

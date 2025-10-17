@@ -1,0 +1,5 @@
+#!/bin/sh
+
+touch "$SCRIPTSDIR/$1"
+chmod +x "$SCRIPTSDIR/$1"
+"$EDITOR" "$SCRIPTSDIR/$1"
