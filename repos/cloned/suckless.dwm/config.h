@@ -16,11 +16,11 @@ static const unsigned int gappx     = 1;        /* gap pixel between windows */
 /* status bar */
 static const Block blocks[] = {
 	/* fg     		command		interval	signal */
-	{ status_fg, "~/src/SCRIPTS/bar_battery", 60, 0},
+	{ status_fg, "bar_battery", 60, 0},
 	{ status_fg, "printf '%(%d-%m-%Y)T'",	60, 0},
 	{ status_fg, "printf '%(%H:%M %p)T'",	60, 0},
-	{ status_fg, "~/src/SCRIPTS/bar_audio_change", 0, 4},
-	{ status_fg, "~/src/SCRIPTS/bar_mic_change", 0, 5}
+	{ status_fg, "bar_audio_change", 0, 4},
+	{ status_fg, "bar_mic_change", 0, 5}
 };
 
 /* inverse the order of the blocks, comment to disable */
@@ -44,6 +44,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "floating-st-scratch", "menu-st",   "MENU",  0,   1,           -1 },
 };
 
 /* layout(s) */
@@ -77,19 +78,44 @@ static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", norm_bg,
 static const char *termcmd[]  = { "st", NULL };
 static const char *upbrightness[]   = { "xbacklight", "-inc", "5", NULL };
 static const char *downbrightness[] = { "xbacklight", "-dec", "5", NULL };
-static const char *incvol[] = {"/home/orion/src/SCRIPTS/audio_inc", NULL};
-static const char *decvol[] = {"/home/orion/src/SCRIPTS/audio_dec", NULL};
-static const char *mutevol[] = {"/home/orion/src/SCRIPTS/audio_toggle", NULL};
-static const char *mutemic[] = {"/home/orion/src/SCRIPTS/mic_toggle", NULL};
-static const char *yazi[] = {"st", "-e", "/home/orion/src/SCRIPTS/dwm_yazi", NULL};
+static const char *incvol[] = {"audio_inc", NULL};
+static const char *decvol[] = {"audio_dec", NULL};
+static const char *mutevol[] = {"audio_toggle", NULL};
+static const char *mutemic[] = {"mic_toggle", NULL};
+static const char *yazi[] = {"st", "-e", "dwm_yazi", NULL};
+static const char *MENU[] = {"MENU", NULL};
 
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+
+	/*
+	 * SPAWNING
+	 */
+	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
+	{ MODKEY,	             		XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,						XK_e,	   spawn,		   {.v = yazi } },
-	{ MODKEY,	             	XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,						XK_a,	   spawn,		   {.v = MENU } },
+	/*
+	 * DESPAWNING
+	 */
+	{ MODKEY,             			XK_q,      killclient,     {0} },
+	{ MODKEY|ShiftMask,             XK_q,      exitdwm,        {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} }, 
+	/*
+	 * TOGGLES
+	 */
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	/*
+	 * LAYOUTS
+	 */
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	/*
+	 * NAVIGATION
+	 */
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -98,20 +124,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,             		XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
-	{ MODKEY,                       XK_n,      togglealttag,   {0} },
+	{ MODKEY,                       XK_r,      togglepreviewallwin,  {0} },
+	/*
+	 * TAGS
+	 */
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -121,9 +139,9 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      exitdwm,           {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} }, 
-	{ MODKEY,                       XK_r,      togglepreviewallwin,  {0} },
+	/*
+	 * BUILT-IN KEYS
+	 */
 	{ 0,            XF86XK_MonBrightnessUp,    spawn,          {.v = upbrightness } },
 	{ 0,            XF86XK_MonBrightnessDown,  spawn,          {.v = downbrightness } },
 	{ 0,			XF86XK_AudioLowerVolume,   spawn,		   {.v = decvol} },	
