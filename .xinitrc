@@ -4,9 +4,9 @@
 xdg-user-dirs-update &
 picom -b
 
-WALLPAPER="/home/orion/pics/walls/$(ls ~/pics/walls | shuf | head -1)"
+WALLPAPER="/home/orion/media/pics/wals/$(ls ~/media/pics/wals | shuf | head -1)"
 xwallpaper --zoom "$WALLPAPER"
-wal -o /home/orion/src/SCRIPTS/wal_reload -i "$WALLPAPER"
+wal -o /home/orion/sys/scripts/wal_reload -i "$WALLPAPER"
 export WALLPAPER="$WALLPAPER"
 
 exec dwm

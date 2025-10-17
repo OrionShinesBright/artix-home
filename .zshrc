@@ -25,14 +25,14 @@ compinit
 
 # Exports
 export EDITOR="$HOME/.config/nvim/nvim-linux-x86_64/bin/nvim"
-export PATH="$PATH:/home/orion/src/SCRIPTS"
+export PATH="$PATH:/home/orion/sys/scripts"
 
 ###########
 # Aliases #
 ###########
 
 # Dotfiles
-alias dots='/usr/bin/git --git-dir="$HOME/src/palantir/bare-repo/git-bare" --work-tree="$HOME"'
+alias dots='/usr/bin/git --git-dir="$HOME/sys/palantir/bare-repo/.git-bare" --work-tree="$HOME"'
 
 # Programs
 alias nvim="NVIM_APPNAME=nvim $HOME/.config/nvim/nvim-linux-x86_64/bin/nvim"
@@ -42,15 +42,16 @@ alias e='yazi'
 alias z="${EDITOR} ~/.zshrc"
 
 # Navigation
-export DWMDIR="/home/orion/src/suckless/dwm"
+export REPOSDIR="/home/orion/repos"
+export DWMDIR="$REPOSDIR/cloned/suckless.dwm"
 alias ndwm="cd $DWMDIR"
-export DMENUDIR="/home/orion/src/suckless/dmenu"
+export DMENUDIR="$$REPOSDIR/cloned/suckless.dmenu"
 alias ndmenu="cd $DMENUDIR"
-export STDIR="/home/orion/src/suckless/st"
+export STDIR="$REPOSDIR/cloned/suckless.st"
 alias nst="cd $STDIR"
-export SCRIPTSDIR="/home/orion/src/SCRIPTS"
+export SCRIPTSDIR="/home/orion/sys/scripts"
 alias nscr="cd $SCRIPTSDIR"
-export STUDYDIR="/home/orion/docs/study"
+export STUDYDIR="/home/orion/study/sem3"
 alias nstudy="cd $STUDYDIR"
 export XDG_CONFIG_DIR="/home/orion/.config"
 alias nconf="cd $XDG_CONFIG_DIR"
